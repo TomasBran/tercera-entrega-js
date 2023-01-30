@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tercera pre-entrega</title>
+</head>
+<body>
+    <h1>Tienda Magic The Gathering</h1>
+
+    <div class="cart-section">
+        <div class="buy-section">
+            <button class="buy-button" id="buy-button">Comprar</button>
+            <h2>Precio total: US$<span id="total">0</span></h2>
+        </div>
+
+        <div class="empty-section">
+            <button class="empty-cart-button" id="empty-cart-button">Vaciar Carro</button>
+        </div>
+    </div>
+    
+    <div class="button-container"><button id="addToCartButton" disabled>Agregar al carro</button></div>
+
+
+    <div class="cards-container" id="cards-container"></div>
+
+<!-- Model [0] = addToCart -->
+    <div id="addToCartModal" class="modal">
+        <div class="modal-content">
+          <p id="item-list">Desea agregar los siguientes items a la lista?:</p>
+
+          <div>
+            <button class="yes-choice">Si</button>
+            <button class="no-choice">No</button>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Model [1] = emptyCart -->
+
+    <div id="emptyCartModal" class="modal">
+        <div class="modal-content">
+          <p id="empty-item-list"></p>
+
+          <div>
+            <button class="yes-choice">Si</button>
+            <button class="no-choice">No</button>
+        </div>
+        </div>
+    </div>
+
+
+     <!-- Model [2] = Buy -->
+
+     <div id="buyModal" class="modal">
+        <div class="modal-content">
+          <p id="buy-list">Desea proceder con la compra?</p>
+        
+          <div>
+            <button class="yes-choice">Si</button>
+            <button class="no-choice">No</button>
+        </div>
+        </div>
+    </div>
+
+
+
+    <script type="module" src="index.js"></script>
+</body>
+</html>

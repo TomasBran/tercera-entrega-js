@@ -1,0 +1,56 @@
+[{
+    "name": "Duress",
+    "imageText": "/images/common-cards/duress.png",
+    "price": 0.20,
+    "amountBought": 0
+},
+
+{
+    "name": "Abrade",
+    "imageText": "/images/common-cards/abrade.png",
+    "price": 0.25,
+    "amountBought": 0
+},
+
+{
+    "name": "Disdainful Stroke",
+    "imageText": "/images/common-cards/disdainful-stroke.png",
+    "price": 0.20,
+    "amountBought": 0
+},
+
+{
+    "name": "Negate",
+    "imageText": "/images/common-cards/negate.png",
+    "price": 0.22,
+    "amountBought": 0
+},
+
+{
+    "name": "Go for the throat",
+    "imageText": "/images/uncommon-cards/go-for-the-throat.jfif",
+    "price": 0.26,
+    "amountBought": 0
+},
+
+{
+    "name": "Cut down",
+    "imageText": "/images/uncommon-cards/cut down.jfif",
+    "price": 0.75,
+    "amountBought": 0
+},
+
+{
+    "name": "Bloodtithe Harvester",
+    "imageText": "/images/uncommon-cards/bloodtithe-harvester.png",
+    "price": 0.29,
+    "amountBought": 0
+},
+
+{
+    "name": "Corpse appraiser",
+    "imageText": "/images/uncommon-cards/corpse-appraiser.jfif",
+    "price": 0.20,
+    "amountBought": 0
+}
+]
