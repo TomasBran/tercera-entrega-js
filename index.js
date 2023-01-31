@@ -1,10 +1,29 @@
 import myJson from './cards.json' assert {type: 'json'}
 
-
 let moneyDisplay = document.getElementById("total");
 let itemList = document.getElementById("item-list");
 
 localStorage.setItem("totalMoney" , Number(localStorage.getItem("totalMoney")).toFixed(2));
+
+
+let datos;
+
+const get_data = async () => {
+    const response = await fetch('./cards.json');
+    let data = await response.json();
+
+    renderAllCards(data);
+
+    return data;
+    
+}
+
+datos = await get_data();
+
+for (let index = 0; index < datos.length; index++) {
+    datos[index].amountBought = JSON.parse(localStorage.getItem("cardsData"))[index];
+}
+
 
 disableBuyIfEmptyCart();
 
@@ -19,35 +38,129 @@ function disableBuyIfEmptyCart(){
 
 moneyDisplay.innerText = Number(localStorage.getItem("totalMoney"));
 
-localStorage.setItem("cardsData", localStorage.getItem("cardsData"));
+let inputs = document.getElementsByClassName("card-amount");
 
-console.log(JSON.parse(localStorage.getItem("cardsData")));
+function allInputsAreEmpty(){
 
-localStorage.setItem("cardsData", JSON.parse(localStorage.getItem("cardsData")));
+    for (let index = 0; index < inputs.length; index++) {
+        if (isNaN(inputs[index].value)){
+            
+            Toastify({
+                text: "Solo se pueden ingresar números",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "center",
+               
 
+            }).showToast();
+            
+            inputs[index].value = 0;
+            return true;
+        }
+    }
 
+    for (let index = 0; index < inputs.length; index++) {
+        if (inputs[index].value != 0)
+            return false;
+    }
 
+    return true;
 
-let datos;
-
-const get_data = async () => {
-    const response = await fetch('./cards.json');
-    let data = await response.json();
-
-    renderAllCards(data);
-
-    return data;
-    
-    // FUNCION OPCIONAL (leer abajo de todo) //
-    // for (let index = 0; index < data.length; index++) {
-    //    renderWithBackticks(data[index].name, data[index].        imageText, data[index].price);
-    // }
 
 }
 
-datos = await get_data();
+for (let index = 0; index < inputs.length; index++) {
+    inputs[index].addEventListener("change", () => {
+        addToCartButton.disabled = allInputsAreEmpty();
+    });
+}
 
 
+
+
+
+
+
+// SECCION ADD TO CART // 
+
+function updateMoneyOnCart(){
+    moneyDisplay.innerText = Number(localStorage.getItem("totalMoney")).toFixed(2);
+}
+
+let addToCartButton = document.getElementById("addToCartButton");
+
+const temporaryAmount = [];
+
+let temporaryMoney = 0;
+
+function addToCart(){
+    for (let index = 0; index < datos.length; index++) {
+        
+        let input = document.getElementsByClassName("card-amount")[index];
+
+        temporaryAmount[index] = Number(input.value);
+
+        addCardsToItemList(input, index);
+
+        temporaryMoney = Number(localStorage.getItem("totalMoney"));
+        temporaryMoney += input.value * datos[index].price;
+        localStorage.setItem("totalMoney" , temporaryMoney);
+        
+        input.value = 0;
+    }
+    
+}
+
+function addCardsToItemList(amount, index){
+    if (amount.value != 0){
+
+        if(amount.value == 1){
+            itemList.innerHTML +=`
+            ${amount.value} copia de ${datos[index].name}.`
+        }else{
+            itemList.innerHTML +=`
+            ${amount.value} copias de ${datos[index].name}.`
+        }
+
+    }
+}
+
+let initialItemListText = "Desea agregar los siguientes items a la lista?:";
+
+function clearItemListAdder(){
+    itemList.innerHTML = initialItemListText;
+}
+
+addToCartButton.addEventListener("click", () => {
+    addToCart();
+    if(itemList.innerText!=initialItemListText){
+        Swal.fire({
+            title: `${itemList.innerHTML}`,
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Agregar",
+            denyButtonText: "No agregar",
+        }).then((result) => {
+            if (result.isConfirmed){
+                Swal.fire("Items añadidos a la lista.", "", "success");
+                updateMoneyOnCart();
+                for (let index = 0; index < datos.length; index++) {
+                    datos[index].amountBought += Number(temporaryAmount[index]);
+                    temporaryAmount[index]=0;            
+                }
+                
+                localStorage.setItem("cardsData", JSON.stringify(numberOfCardsBought()));
+                emptyCartButton.style.display = "block";
+            } else{
+                Swal.fire("Items no añadidos.", "", "error");
+                localStorage.setItem("totalMoney" , Number(moneyDisplay.innerText));
+            }
+            disableBuyIfEmptyCart();
+            clearItemListAdder();
+        })
+    }
+})
 
 function numberOfCardsBought(){
     let amountBoughtArray = [];
@@ -56,103 +169,12 @@ function numberOfCardsBought(){
     }
     return amountBoughtArray;
 }
-
-let selects = document.getElementsByClassName("card-amount");
-
-
-
-function allSelectsAreEmpty(){
-    for (let index = 0; index < selects.length; index++) {
-        if(selects[index].value !=0)
-        return false;
-    }
-    return true;
-}
-
-for (let index = 0; index < selects.length; index++) {
-    selects[index].addEventListener("change", () => {
-        addToCartButton.disabled = allSelectsAreEmpty();
-    });
-}
-
-const temporaryAmount = [];
-let temporaryMoney = 0;
-function addToCart(){
-    
-    for (let index = 0; index < datos.length; index++) {
-        
-        let select = document.getElementsByClassName("card-amount")[index];
-
-        temporaryAmount[index] = Number(select.value);
-
-        addCardsToItemList(select, index);
-
-        temporaryMoney = Number(localStorage.getItem("totalMoney"));
-        temporaryMoney += select.value * datos[index].price;
-        localStorage.setItem("totalMoney" , temporaryMoney);
-        
-        select.value = 0;
-    }
-    
-}
-
-let buyModal = document.getElementById("buyModal");
-
-let yesChoiceBuy = document.getElementsByClassName("yes-choice")[2];
-let noChoiceBuy = document.getElementsByClassName("no-choice")[2];
-
-yesChoiceBuy.addEventListener("click" , confirmBuy);
-noChoiceBuy.addEventListener("click" , () => {
-    exitModal(buyModal)
-})
-
-
-document.getElementById("buy-button").addEventListener("click", () =>{
-    addCardsToBuyList();
-    showModal(buyModal);
-})
-
-
-function addCardsToBuyList(){
-    document.getElementById("buy-list").innerHTML=`Confirmar compra de las siguientes cartas:<br>
-    `
-
-    let amountBoughtArray = JSON.parse(localStorage.getItem("cardsData"));
-    for (let index = 0; index < amountBoughtArray.length; index++) {
-
-        if(amountBoughtArray[index]!=0){
-
-            
-            document.getElementById("buy-list").innerHTML+=`
-            ${amountBoughtArray[index]} copias de ${datos[index].name} a $${datos[index].price.toFixed(2)} c/u<br> 
-            `
-        }
-    }
-
-    document.getElementById("buy-list").innerHTML+=`<br>Total: US$${Number(localStorage.getItem("totalMoney")).toFixed(2)}`
-
-}
-
-function confirmBuy(){
-
-    
-
-
-}
+// FIN SECCION ADD TO CART //
 
 
 
 
-let emptyCartModal = document.getElementById("emptyCartModal");
-
-let yesChoiceEmptyCart = document.getElementsByClassName("yes-choice")[1];
-let noChoiceEmptyCart = document.getElementsByClassName("no-choice")[1];
-
-yesChoiceEmptyCart.addEventListener("click", () => confirmEmptyCart(true));
-noChoiceEmptyCart.addEventListener("click",() => confirmEmptyCart(false));
-
-
-
+// SECCION EMPTY CART // 
 let emptyCartButton = document.getElementById("empty-cart-button");
 
 if(localStorage.getItem("totalMoney")!=0){
@@ -162,34 +184,45 @@ if(localStorage.getItem("totalMoney")!=0){
 emptyCartButton.addEventListener("click", () => {
     
     if(localStorage.getItem("totalMoney") != 0){
-        updateEmptyCartModal();
-        showModal(emptyCartModal);
+        updateEmptyCartText();
+        Swal.fire({
+            title: `${emptyCartText.innerHTML}`,
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Vaciar",
+            denyButtonText: "No vaciar",
+        }).then((result) => {
+            if (result.isConfirmed){
+                Swal.fire("Carrito vacío.", "", "success");
+                emptyCart();
+                emptyCartButton.style.display = "none";
+            } else{
+                Swal.fire("No se vació el carro", "", "info");
+            }
+            emptyCartText.innerText = "";
+        })
     }
 });
 
 let emptyCartText = document.getElementById("empty-item-list");
 
-function updateEmptyCartModal(){
-    emptyCartText.innerHTML = "Desea eliminar los siguientes items del carrito?:<br>"
+function updateEmptyCartText(){
+    emptyCartText.innerHTML = "Desea eliminar los siguientes items del carrito?:"
     for (let index = 0; index < datos.length; index++) {
         if(datos[index].amountBought!=0){
 
-            emptyCartText.innerHTML +=`
-            ${datos[index].amountBought} copias de ${datos[index].name} <br>            
-            `
+            if(datos[index].amountBought == 1){
+                emptyCartText.innerHTML +=`
+                ${datos[index].amountBought} copia de ${datos[index].name}`
+            }
+            else{
+                emptyCartText.innerHTML +=`
+                ${datos[index].amountBought} copias de ${datos[index].name}`
+            }
+
+
         }
     }
-}
-
-
-
-function confirmEmptyCart(boolChoice){
-    if(boolChoice){
-        emptyCart();
-        emptyCartButton.style.display = "none";
-    }
-    emptyCartText.innerText = "";
-    exitModal(emptyCartModal);
 }
 
 function emptyCart(){
@@ -205,99 +238,85 @@ function emptyCart(){
     updateMoneyOnCart();
 }
 
+// FIN SECCION EMPTY CART // 
 
 
-let yesChoiceAddToCart = document.getElementsByClassName("yes-choice")[0];
-let noChoiceAddToCart = document.getElementsByClassName("no-choice")[0];
-
-yesChoiceAddToCart.addEventListener("click" , () => confirmAddToCart(true));
-noChoiceAddToCart.addEventListener("click" , () => confirmAddToCart(false));
 
 
-function updateMoneyOnCart(){
-    moneyDisplay.innerText = Number(localStorage.getItem("totalMoney")).toFixed(2);
+
+// SECCION BUY //
+
+
+// Esta funcion es para que cuando llegue al menu de comprar, tire un color de mana aleatorio. Ya es lujo //
+function randomManaIcon(){
+    switch(Math.floor(Math.random() * 5)){
+        case 0:
+            return "<img src='/images/blue-mana.png'>";
+        case 1:
+            return "<img src='/images/red-mana.png'>";
+        case 2:
+            return "<img src='/images/green-mana.png'>";
+        case 3:
+            return "<img src='/images/white-mana.png'>";
+        case 4:
+            return "<img src='/images/black-mana.png'>";
+        default:
+            alert("Error");
+            break;
+    }
 }
 
-function confirmAddToCart(boolChoice){
-    
-    if (boolChoice){
-        updateMoneyOnCart();
-        for (let index = 0; index < datos.length; index++) {
-            datos[index].amountBought += Number(temporaryAmount[index]);
-            temporaryAmount[index]=0;            
+
+let buyListText = document.getElementById("buy-list");
+let buyButton = document.getElementById("buy-button");
+
+buyButton.addEventListener("click", () =>{
+    addCardsToBuyList();
+    Swal.fire({
+        title: `${buyListText.innerHTML}`,
+        iconHtml: randomManaIcon(),
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Comprar",
+        denyButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed){
+            Swal.fire("Has comprado las cartas por US$" + Number(localStorage.getItem("totalMoney")).toFixed(2), "Gracias por tu compra", "success");
+            emptyCart();
+            emptyCartButton.style.display = "none";
+        } else{
+            Swal.fire("No se ha confirmado la compra de las cartas", "Volverás al menu anterior", "warning");
         }
-        
-        // for (let index = 0; index < datos.length; index++) {
-        //     localStorage.setItem("cardsData")[index]
-        // }
-
-        localStorage.setItem("cardsData", JSON.stringify(numberOfCardsBought()));
-        emptyCartButton.style.display = "block";
-        
-
-    } else{
-        localStorage.setItem("totalMoney" , Number(moneyDisplay.innerText));
-
-    }
+    })
     
-    disableBuyIfEmptyCart();
-    clearItemListAdder();
-    exitModal(addToCartModal);
-}
-
-function clearItemListAdder(){
-    itemList.innerHTML = "Desea agregar los siguientes items a la lista?:";
-}
-
-function addCardsToItemList(amount, index){
-    if (amount.value != 0){
-
-        itemList.innerHTML +=`
-        <br> ${amount.value} copias de ${datos[index].name}.
-        `
-    }
-}
-
-let addToCartButton = document.getElementById("addToCartButton");
-addToCartButton.addEventListener("click", () => {
-    addToCart();
-    addToCartButton.disabled = allSelectsAreEmpty();
-    
-}
-);
-
-
-let addToCartModal = document.getElementById("addToCartModal");
-
-
-let initialItemListText = "Desea agregar los siguientes items a la lista?:";
-
-addToCartButton.addEventListener("click", () => {
-    if(itemList.innerText!=initialItemListText){
-        showModal(addToCartModal);
-    }
 })
 
+function addCardsToBuyList(){
+    buyListText.innerHTML=`Confirmar compra de las siguientes cartas:
+    `
 
+    let amountBoughtArray = JSON.parse(localStorage.getItem("cardsData"));
+    for (let index = 0; index < amountBoughtArray.length; index++) {
 
-window.onclick = function (event){
-    if(event.target.className == "modal"){
-        confirmAddToCart(false);
-        confirmEmptyCart(false);
+        if(amountBoughtArray[index]!=0){
+
+            if(amountBoughtArray[index]==1){
+                buyListText.innerHTML+=`${amountBoughtArray[index]} copia de ${datos[index].name} a $${datos[index].price.toFixed(2)} c/u 
+                `
+            } else{
+                buyListText.innerHTML+=`${amountBoughtArray[index]} copias de ${datos[index].name} a $${datos[index].price.toFixed(2)} c/u 
+                `
+            }
+        }
     }
+
+    document.getElementById("buy-list").innerHTML+=`<br>Total: US$${Number(localStorage.getItem("totalMoney")).toFixed(2)}`
+
 }
+// FIN SECCION BUY//
 
 
-function showModal(modalType){
-    modalType.style.display = "block";
-}
-
-function exitModal(modalType){
-    modalType.style.display = "none";
-}
-
-
-
+// SECCION RENDER CARD // 
 function renderCard(title, imageSource, price){
     let cardsGrid = document.getElementById("cards-container");
 
@@ -308,8 +327,8 @@ function renderCard(title, imageSource, price){
 
     let amountDivContainer = document.createElement("div");
 
+    let amountInput = document.createElement("input");
     let cardAmountText = document.createElement("p");
-    let amountSelect = document.createElement("select");
 
     cardsGrid.appendChild(cardContainer);
 
@@ -327,14 +346,12 @@ function renderCard(title, imageSource, price){
 
     cardAmountText.innerHTML = "<span>Cantidad: &nbsp</span>";
 
-    amountSelect.innerHTML = `
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-    `
-    amountSelect.setAttribute("class", "card-amount");
+
+    
+    amountInput.setAttribute("maxlength", 2);
+    amountInput.setAttribute("value", 0);
+    amountInput.setAttribute("class", "card-amount");
+
     
 
     cardContainer.appendChild(cardTitle);
@@ -342,7 +359,8 @@ function renderCard(title, imageSource, price){
     cardContainer.appendChild(cardPrice);
     cardContainer.appendChild(amountDivContainer);
     amountDivContainer.appendChild(cardAmountText);
-    amountDivContainer.appendChild(amountSelect);
+    amountDivContainer.appendChild(amountInput);
+
 
 
 }
@@ -356,22 +374,4 @@ function renderAllCards(list){
     });
 
 }
-
-// FUNCION OPCIONAL, EN VEZ DE ESTA, SE UTILIZA renderCard()// 
-function renderWithBackticks(title, imageSource, price){
-    
-    let cardsGrid = document.getElementById("cards-container");
-    
-    
-    cardsGrid.innerHTML+=    
-    `
-    <div class="card-item"><h4>${title}</h4><img src=${imageSource} class="card"><p>Precio: $${price}</p><div class="amount-div-container"><p><span>Cantidad: &nbsp;</span></p><select class="card-amount">
-    <option value="0">0</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    </select></div></div>
-    
-    `;
-}
+// FIN SECCION RENDER CARD //

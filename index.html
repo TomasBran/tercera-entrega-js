@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="style.css">
     <title>Tercera pre-entrega</title>
 </head>
@@ -26,48 +27,17 @@
 
     <div class="cards-container" id="cards-container"></div>
 
-<!-- Model [0] = addToCart -->
-    <div id="addToCartModal" class="modal">
-        <div class="modal-content">
-          <p id="item-list">Desea agregar los siguientes items a la lista?:</p>
+    
+    <p class="modal-text" id="item-list">Desea agregar los siguientes items a la lista?:</p>
 
-          <div>
-            <button class="yes-choice">Si</button>
-            <button class="no-choice">No</button>
-        </div>
-        </div>
-    </div>
+    <p class="modal-text" id="empty-item-list"></p>
 
 
-    <!-- Model [1] = emptyCart -->
-
-    <div id="emptyCartModal" class="modal">
-        <div class="modal-content">
-          <p id="empty-item-list"></p>
-
-          <div>
-            <button class="yes-choice">Si</button>
-            <button class="no-choice">No</button>
-        </div>
-        </div>
-    </div>
-
-
-     <!-- Model [2] = Buy -->
-
-     <div id="buyModal" class="modal">
-        <div class="modal-content">
-          <p id="buy-list">Desea proceder con la compra?</p>
+    <p class="modal-text" id="buy-list">Desea proceder con la compra?</p>
         
-          <div>
-            <button class="yes-choice">Si</button>
-            <button class="no-choice">No</button>
-        </div>
-        </div>
-    </div>
 
-
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="index.js"></script>
 </body>
 </html>
