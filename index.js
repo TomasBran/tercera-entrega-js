@@ -20,9 +20,22 @@ const get_data = async () => {
 
 datos = await get_data();
 
-for (let index = 0; index < datos.length; index++) {
-    datos[index].amountBought = JSON.parse(localStorage.getItem("cardsData"))[index];
+
+
+let firstTimeExecute;
+
+if(localStorage.getItem("cardsData") == undefined){
+    firstTimeExecute = true;
+}else{
+    firstTimeExecute = false;
 }
+
+if (!firstTimeExecute){
+    for (let index = 0; index < datos.length; index++) {
+        datos[index].amountBought = JSON.parse(localStorage.getItem("cardsData"))[index];
+    }
+}
+
 
 
 disableBuyIfEmptyCart();
