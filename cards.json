@@ -1,27 +1,27 @@
 [{
     "name": "Duress",
-    "imageText": "../images/common-cards/duress.png",
+    "imageText": "./images/common-cards/duress.png",
     "price": 0.24,
     "amountBought": 0
 },
 
 {
     "name": "Abrade",
-    "imageText": "../images/common-cards/abrade.png",
+    "imageText": "./images/common-cards/abrade.png",
     "price": 0.39,
     "amountBought": 0
 },
 
 {
     "name": "Disdainful Stroke",
-    "imageText": "../images/common-cards/disdainful-stroke.png",
+    "imageText": "./images/common-cards/disdainful-stroke.png",
     "price": 0.24,
     "amountBought": 0
 },
 
 {
     "name": "Negate",
-    "imageText": "../images/common-cards/negate.png",
+    "imageText": "./images/common-cards/negate.png",
     "price": 0.24,
     "amountBought": 0
 },
@@ -32,28 +32,28 @@
 
 {
     "name": "Go for the Throat",
-    "imageText": "../images/uncommon-cards/go-for-the-throat.jfif",
+    "imageText": "./images/uncommon-cards/go-for-the-throat.jfif",
     "price": 0.79,
     "amountBought": 0
 },
 
 {
     "name": "Cut Down",
-    "imageText": "../images/uncommon-cards/cut down.jfif",
+    "imageText": "./images/uncommon-cards/cut down.jfif",
     "price": 1.59,
     "amountBought": 0
 },
 
 {
     "name": "Bloodtithe Harvester",
-    "imageText": "../images/uncommon-cards/bloodtithe-harvester.png",
+    "imageText": "./images/uncommon-cards/bloodtithe-harvester.png",
     "price": 0.29,
     "amountBought": 0
 },
 
 {
     "name": "Corpse Appraiser",
-    "imageText": "../images/uncommon-cards/corpse-appraiser.jfif",
+    "imageText": "./images/uncommon-cards/corpse-appraiser.jfif",
     "price": 0.49,
     "amountBought": 0
 },
@@ -63,28 +63,28 @@
 
 {
     "name": "Reckoner Bankbuster",
-    "imageText": "../images/rare-cards/reckoner-bankbuster.png",
+    "imageText": "./images/rare-cards/reckoner-bankbuster.png",
     "price": 10.49,
     "amountBought": 0
 },
 
 {
     "name": "Fable of the Mirror Breaker",
-    "imageText": "../images/rare-cards/fable-of-the-mirror-breaker.jfif",
+    "imageText": "./images/rare-cards/fable-of-the-mirror-breaker.jfif",
     "price": 35.99,
     "amountBought": 0
 },
 
 {
     "name": "Brotherhood's End",
-    "imageText": "../images/rare-cards/brotherhoods-end.jfif",
+    "imageText": "./images/rare-cards/brotherhoods-end.jfif",
     "price": 13.99,
     "amountBought": 0
 },
 
 {
     "name": "Unlicensed Hearse",
-    "imageText": "../images/rare-cards/unlicensed-hearse.jfif",
+    "imageText": "./images/rare-cards/unlicensed-hearse.jfif",
     "price": 19.99,
     "amountBought": 0
 },
@@ -96,28 +96,28 @@
 
 {
     "name": "Sheoldred, the Apocalypse",
-    "imageText": "../images/mythic-rare-cards/sheoldred-the-apocalypse.jpg",
+    "imageText": "./images/mythic-rare-cards/sheoldred-the-apocalypse.jpg",
     "price": 79.99,
     "amountBought": 0
 },
 
 {
     "name": "The Wandering Emperor",
-    "imageText": "../images/mythic-rare-cards/the-wandering-emperor.png",
+    "imageText": "./images/mythic-rare-cards/the-wandering-emperor.png",
     "price": 42.99,
     "amountBought": 0
 },
 
 {
     "name": "Sanctuary Warden",
-    "imageText": "../images/mythic-rare-cards/sanctuary-warden.png",
+    "imageText": "./images/mythic-rare-cards/sanctuary-warden.png",
     "price": 2.29,
     "amountBought": 0
 },
 
 {
     "name": "Liliana of the Veil",
-    "imageText": "../images/mythic-rare-cards/liliana-of-the-veil.png",
+    "imageText": "./images/mythic-rare-cards/liliana-of-the-veil.png",
     "price": 23.99,
     "amountBought": 0
 }
