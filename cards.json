@@ -1,6 +1,6 @@
 [{
     "name": "Duress",
-    "imageText": "./images/common-cards/duress.png",
+    "imageText": "images/common-cards/duress.png",
     "price": 0.24,
     "amountBought": 0
 },

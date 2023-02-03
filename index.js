@@ -264,15 +264,15 @@ function emptyCart(){
 function randomManaIcon(){
     switch(Math.floor(Math.random() * 5)){
         case 0:
-            return "<img src='/images/blue-mana.png'>";
+            return "<img src='./images/blue-mana.png'>";
         case 1:
-            return "<img src='/images/red-mana.png'>";
+            return "<img src='./images/red-mana.png'>";
         case 2:
-            return "<img src='/images/green-mana.png'>";
+            return "<img src='./images/green-mana.png'>";
         case 3:
-            return "<img src='/images/white-mana.png'>";
+            return "<img src='./images/white-mana.png'>";
         case 4:
-            return "<img src='/images/black-mana.png'>";
+            return "<img src='./images/black-mana.png'>";
         default:
             alert("Error");
             break;
