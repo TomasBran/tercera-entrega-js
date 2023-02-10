@@ -29,7 +29,6 @@ h1, h3{
 
 .empty-cart-button{
     height: 30px;
-    display: none;
 }
 
 .buy-section{
@@ -63,6 +62,18 @@ h3{
     width: 25%;
 }
 
+@media (max-width: 930px){
+    .card-item{
+        width: 50%;
+    }
+}
+
+@media (max-width: 480px){
+    .card-item{
+        width: 100%;
+    }
+}
+
 .cards-container{
     display: flex;
     justify-content: space-around;
@@ -72,6 +83,11 @@ h3{
 .amount-div-container{
     display: flex;
     align-items: center;
+}
+
+.amount-div-container input{
+    margin: 3px;
+    text-align: center;
 }
 
 .card-amount{
@@ -88,4 +104,32 @@ h3{
 
 .modal-text{
     visibility: hidden;
+}
+
+.active{
+    background-color: rgba(240, 240, 240, 0.452);
+}
+
+input{
+    background-color: white;
+}
+
+p, h4{
+    text-shadow: -1px 0 black, 0 1.5px black, 1.5px 0 black, 0 -1px black;
+}
+
+button{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.rarity-filter:hover{
+    transform:scale(1.08);
+    transition: transform 0.3s ease;
+}
+
+.filter-container{
+    flex-direction: column;
+    position: fixed;
+    top: 6%;
 }

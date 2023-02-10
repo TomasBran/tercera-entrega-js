@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="style.css">
-    <title>Tercera pre-entrega</title>
+    <title>Tienda MTG</title>
 </head>
 <body>
     <h1>Tienda Magic The Gathering</h1>
@@ -22,7 +22,22 @@
         </div>
     </div>
     
-    <div class="button-container"><button id="addToCartButton" disabled>Agregar al carro</button></div>
+    <div class="filter-container">
+        <p>Mostrar:</p> 
+        <select name="rarity-filter" id="rarity-filter">
+            <option value="all">Mostrar todo</option>
+            <option value="common">Comunes</option>
+            <option value="uncommon">Poco Comunes</option>
+            <option value="rare">Raras</option>
+            <option value="mythic">Raras Míticas</option>
+        </select>
+        <!-- <button class="rarity-filter" id="common">Comunes</button>
+        <button class="rarity-filter" id="uncommon">Poco comunes</button>
+        <button class="rarity-filter" id="rare">Raras</button>
+        <button class="rarity-filter"
+        id="mythic">Raras Míticas</button>
+        <button class="rarity-filter active" id="all">Todas</button> -->
+    </div>
 
 
     <div class="cards-container" id="cards-container"></div>
@@ -34,7 +49,9 @@
 
 
     <p class="modal-text" id="buy-list">Desea proceder con la compra?</p>
-        
+
+
+
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

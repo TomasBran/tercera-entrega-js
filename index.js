@@ -34,6 +34,8 @@ if (!firstTimeExecute){
     for (let index = 0; index < datos.length; index++) {
         datos[index].amountBought = JSON.parse(localStorage.getItem("cardsData"))[index];
     }
+} else{
+    localStorage.setItem("cardsData", JSON.stringify(new Array(datos.length).fill(0)));
 }
 
 
@@ -52,10 +54,11 @@ function disableBuyIfEmptyCart(){
 moneyDisplay.innerText = Number(localStorage.getItem("totalMoney"));
 
 let inputs = document.getElementsByClassName("card-amount");
+let minusButtons = document.getElementsByClassName("minus-button");
+let plusButtons = document.getElementsByClassName("plus-button");
 
-function allInputsAreEmpty(){
+function isInputEmpty(index){
 
-    for (let index = 0; index < inputs.length; index++) {
         if (isNaN(inputs[index].value)){
             
             Toastify({
@@ -65,115 +68,104 @@ function allInputsAreEmpty(){
                 gravity: "top",
                 position: "center",
                
-
             }).showToast();
             
             inputs[index].value = 0;
             return true;
         }
-    }
 
-    for (let index = 0; index < inputs.length; index++) {
-        if (inputs[index].value != 0)
-            return false;
-    }
-
-    return true;
-
+        if(inputs[index].value < 0){
+            Toastify({
+                text: "No se pueden ingresar valores negativos",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "center",
+               
+            }).showToast();
+            inputs[index].value = 0;
+            return true;
+        }
+    
+            return inputs[index].value == 0;
 
 }
-
-for (let index = 0; index < inputs.length; index++) {
-    inputs[index].addEventListener("change", () => {
-        addToCartButton.disabled = allInputsAreEmpty();
-    });
-}
-
-
-
-
-
 
 
 // SECCION ADD TO CART // 
 
-function updateMoneyOnCart(){
-    moneyDisplay.innerText = Number(localStorage.getItem("totalMoney")).toFixed(2);
-}
 
-let addToCartButton = document.getElementById("addToCartButton");
+for (let index = 0; index < minusButtons.length; index++) {
 
-const temporaryAmount = [];
+    plusButtons[index].addEventListener("click", () =>{
+        inputs[index].value = Number(inputs[index].value) + 1;
 
-let temporaryMoney = 0;
+        Toastify({
+            text: `Se añadió 1 copia de ${datos[index].name} al carro`,
+            duration: 1200,
+            close: true,
+            gravity: "bottom",
+            position: "right",
+            style: {
+                background: "linear-gradient(to right, #68c455, #1e830a)",
+              },
+        }).showToast();
 
-function addToCart(){
-    for (let index = 0; index < datos.length; index++) {
+        updateAmountBougth(inputs[index].value, index);
         
-        let input = document.getElementsByClassName("card-amount")[index];
+    });
 
-        temporaryAmount[index] = Number(input.value);
-
-        addCardsToItemList(input, index);
-
-        temporaryMoney = Number(localStorage.getItem("totalMoney"));
-        temporaryMoney += input.value * datos[index].price;
-        localStorage.setItem("totalMoney" , temporaryMoney);
+    minusButtons[index].addEventListener("click", () => {
         
-        input.value = 0;
-    }
-    
-}
 
-function addCardsToItemList(amount, index){
-    if (amount.value != 0){
+        if(inputs[index].value>0){
 
-        if(amount.value == 1){
-            itemList.innerHTML +=`
-            ${amount.value} copia de ${datos[index].name}.`
-        }else{
-            itemList.innerHTML +=`
-            ${amount.value} copias de ${datos[index].name}.`
+            Toastify({
+                text: `Se quitó 1 copia de ${datos[index].name} del carro`,
+                duration: 1200,
+                close: true,
+                gravity: "bottom",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #ca7070, #861717)",
+                  },
+                
+            }).showToast();
         }
 
-    }
+
+        inputs[index].value = Number(inputs[index].value) - 1;
+
+        isInputEmpty(index);
+        updateAmountBougth(inputs[index].value, index); 
+        
+    });
+
 }
 
-let initialItemListText = "Desea agregar los siguientes items a la lista?:";
-
-function clearItemListAdder(){
-    itemList.innerHTML = initialItemListText;
-}
-
-addToCartButton.addEventListener("click", () => {
-    addToCart();
-    if(itemList.innerText!=initialItemListText){
-        Swal.fire({
-            title: `${itemList.innerHTML}`,
-            showDenyButton: true,
-            showCancelButton: false,
-            confirmButtonText: "Agregar",
-            denyButtonText: "No agregar",
-        }).then((result) => {
-            if (result.isConfirmed){
-                Swal.fire("Items añadidos a la lista.", "", "success");
-                updateMoneyOnCart();
-                for (let index = 0; index < datos.length; index++) {
-                    datos[index].amountBought += Number(temporaryAmount[index]);
-                    temporaryAmount[index]=0;            
-                }
+function updateAmountBougth(input, index){
+    datos[index].amountBought = input;
                 
-                localStorage.setItem("cardsData", JSON.stringify(numberOfCardsBought()));
-                emptyCartButton.style.display = "block";
-            } else{
-                Swal.fire("Items no añadidos.", "", "error");
-                localStorage.setItem("totalMoney" , Number(moneyDisplay.innerText));
-            }
-            disableBuyIfEmptyCart();
-            clearItemListAdder();
-        })
-    }
-})
+    localStorage.setItem("cardsData", JSON.stringify(numberOfCardsBought()));
+    updateMoneyOnCart();
+}
+
+
+function updateMoneyOnCart(){
+
+    localStorage.setItem("totalMoney", 0);
+    let temporaryMoney = 0;
+
+    const data = JSON.parse(localStorage.getItem("cardsData"));
+    data.forEach((element, index) => {
+        temporaryMoney += element * Number(datos[index].price);
+    });
+
+    localStorage.setItem("totalMoney", Number(localStorage.getItem("totalMoney")) + Number(temporaryMoney));
+    
+    moneyDisplay.innerText = Number(localStorage.getItem("totalMoney")).toFixed(2);
+    disableBuyIfEmptyCart();
+}
 
 function numberOfCardsBought(){
     let amountBoughtArray = [];
@@ -208,12 +200,13 @@ emptyCartButton.addEventListener("click", () => {
             if (result.isConfirmed){
                 Swal.fire("Carrito vacío.", "", "success");
                 emptyCart();
-                emptyCartButton.style.display = "none";
             } else{
                 Swal.fire("No se vació el carro", "", "info");
             }
             emptyCartText.innerText = "";
         })
+    } else{
+        Swal.fire("El carrito ya está vacío.", "", "info");
     }
 });
 
@@ -242,7 +235,8 @@ function emptyCart(){
     let cardsDataClear = [];
     for (let index = 0; index < datos.length; index++) {
         datos[index].amountBought = 0;
-        cardsDataClear[index] = 0;   
+        cardsDataClear[index] = 0;
+        inputs[index].value = 0;   
     }
     localStorage.setItem("cardsData" , JSON.stringify(cardsDataClear));
     localStorage.setItem("totalMoney", 0);
@@ -250,6 +244,53 @@ function emptyCart(){
     
     updateMoneyOnCart();
 }
+
+Array.from(document.getElementsByClassName("single-card-empty")).forEach((element, index) => {
+    
+    element.addEventListener("click", () => {
+        emptySingleCard(index);
+        
+    });
+
+})
+
+
+function emptySingleCard(cardIndex){
+    
+    if(document.getElementsByClassName("card-amount")[cardIndex].value != 0){
+
+        Swal.fire({
+            title: `Desea eliminar ${datos[cardIndex].amountBought} copias de ${datos[cardIndex].name} del carrito?`,
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Confirmar",
+            denyButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed){
+                Swal.fire(`Has eliminado las copias de ${datos[cardIndex].name} del carrito`, "", "success");
+    
+                updateAmountBougth(0 , cardIndex);
+                localStorage.setItem("cardsData", JSON.stringify(numberOfCardsBought()));
+                disableBuyIfEmptyCart();
+                updateMoneyOnCart();
+                document.getElementsByClassName("card-amount")[cardIndex].value = 0;
+    
+            } else{
+                Swal.fire("No se han eliminado las cartas", "", "warning");
+            }
+        });
+    } else{
+        Swal.fire(`No hay ninguna copia de ${datos[cardIndex].name} en el carrito`, "", "warning");
+    }
+
+
+
+    
+    
+}
+
+
+
 
 // FIN SECCION EMPTY CART // 
 
@@ -296,7 +337,6 @@ buyButton.addEventListener("click", () =>{
         if (result.isConfirmed){
             Swal.fire("Has comprado las cartas por US$" + Number(localStorage.getItem("totalMoney")).toFixed(2), "Gracias por tu compra", "success");
             emptyCart();
-            emptyCartButton.style.display = "none";
         } else{
             Swal.fire("No se ha confirmado la compra de las cartas", "Volverás al menu anterior", "warning");
         }
@@ -329,8 +369,40 @@ function addCardsToBuyList(){
 // FIN SECCION BUY//
 
 
+// SECCION FILTRO // 
+
+function filterCards(rarity){
+    
+    Array.from(document.getElementsByClassName("card-item")).forEach(element => {
+        
+        if(rarity == "all"){
+            element.style.display = "flex";
+            return;
+        }
+
+        if(!element.classList.contains(rarity)){
+            element.style.display = "none";
+        }else{
+            element.style.display = "flex";
+        }
+    });
+
+}
+
+let raritySelect = document.getElementsByName("rarity-filter")[0];
+
+raritySelect.addEventListener("change", () => {
+    filterCards(raritySelect.value);
+})
+
+
+// FIN SECCION FILTRO //
+
+
+
+
 // SECCION RENDER CARD // 
-function renderCard(title, imageSource, price){
+function renderCard(title, imageSource, price, rarity){
     let cardsGrid = document.getElementById("cards-container");
 
     let cardContainer = document.createElement("div");
@@ -342,10 +414,14 @@ function renderCard(title, imageSource, price){
 
     let amountInput = document.createElement("input");
     let cardAmountText = document.createElement("p");
+    let minusButton = document.createElement("button");
+    let plusButton = document.createElement("button");
+
+    let cardToCartButton = document.createElement("button");
 
     cardsGrid.appendChild(cardContainer);
 
-    cardContainer.setAttribute("class", "card-item");
+    cardContainer.setAttribute("class", `card-item ${rarity}`);
     
     cardTitle.innerText = title;
     cardTitle.setAttribute("class", "card-title");
@@ -358,12 +434,21 @@ function renderCard(title, imageSource, price){
     amountDivContainer.setAttribute("class","amount-div-container");
 
     cardAmountText.innerHTML = "<span>Cantidad: &nbsp</span>";
+    minusButton.innerText = "-";
+    plusButton.innerText = "+";
+
+    minusButton.setAttribute("class", "minus-button");
+    plusButton.setAttribute("class", "plus-button");
 
 
     
     amountInput.setAttribute("maxlength", 2);
     amountInput.setAttribute("value", 0);
     amountInput.setAttribute("class", "card-amount");
+    amountInput.setAttribute("disabled", "true");
+
+    cardToCartButton.innerText = "Vaciar";
+    cardToCartButton.setAttribute("class", "single-card-empty");
 
     
 
@@ -372,7 +457,10 @@ function renderCard(title, imageSource, price){
     cardContainer.appendChild(cardPrice);
     cardContainer.appendChild(amountDivContainer);
     amountDivContainer.appendChild(cardAmountText);
+    amountDivContainer.appendChild(minusButton);
     amountDivContainer.appendChild(amountInput);
+    amountDivContainer.appendChild(plusButton);
+    cardContainer.appendChild(cardToCartButton);
 
 
 
@@ -382,7 +470,7 @@ function renderAllCards(list){
     
     list.forEach(card => {
        
-        renderCard(card.name, card.imageText, card.price.toFixed(2))
+        renderCard(card.name, card.imageText, card.price.toFixed(2), card.rarity)
 
     });
 
